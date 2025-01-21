@@ -1,0 +1,16 @@
+.item-list{
+    display: flex;
+    flex-direction: column;
+}
+
+.item-list h2 {
+    color: #EB6A40;
+    font-size: 30px;
+    margin: 24px;
+
+}
+.item-list p {
+    color: #999999;
+    font-size: 20px;
+    margin: 24px;
+}

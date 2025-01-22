@@ -1,0 +1,39 @@
+/* styles.css */
+
+.repo-details-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.back-button {
+  background-color: #EB6A40;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  background-color: #D9533D;
+}
+
+.repo-details h1 {
+  font-size: 2rem;
+  color: #EB6A40;
+  margin-bottom: 20px;
+}
+
+.repo-details p {
+  font-size: 1rem;
+  margin: 10px 0;
+  line-height: 1.6;
+  color: #333;
+}

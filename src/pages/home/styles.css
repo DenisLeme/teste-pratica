@@ -22,18 +22,23 @@
     justify-content: center;
     color: aliceblue;
     flex-direction: column;
+    gap: 20px;
 }
 
 input {
     border-radius: 22px;
     min-width: 250px;
-    width: 50%;
+    width: 20%;
     margin-right: 12px;
     border: 1px solid #9999;
     background: transparent;
     font-size: 18px;
     padding: 10px;
     color: Black;
+}
+.search{
+    display: flex;
+    flex-direction: row;
 }
 
 button {
@@ -45,9 +50,12 @@ button {
     font-size: 18px;
     padding: 10px;
 }
-button :hover{
-    background: #EB6A40;
+
+button:hover {
+    background: #D9533D; 
+    cursor: pointer; 
 }
+
 
 .perfil {
     display: flex;
@@ -94,35 +102,7 @@ button :hover{
     text-align: center;
 
 }
-.repo-details {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -20%);
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 30px;
-    z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    color: black;
-    gap: 15px;
-  }
-  
-  .repo-details button {
-    background-color: #EB6A40;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .repo-details button:hover {
-    background-color: #EB6A40;
-  }
+
   .conteudo{
     flex-direction: column;
     width: 100%;

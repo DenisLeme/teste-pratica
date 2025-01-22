@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'; // useCallback foi importado
-import { Header } from '../../components/Header';
+import { Header } from '../../components/Header/index.tsx';
 import { useNavigate } from 'react-router-dom';
-import ItemList from '../../components/ItemList';
+import ItemList from '../../components/ItemList/index.tsx';
 
 interface Repo { 
     owner: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../../components/Header/index.tsx';
 import './styles.css';
@@ -27,6 +27,32 @@ const Home: React.FC = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const savedUser = localStorage.getItem('currentUser');
+    const savedRepos = localStorage.getItem('repos');
+    const currentTime = new Date().getTime();
+    const fiveMinutes = 3 * 60 * 1000; 
+  
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser);
+      if (currentTime - parsedUser.timestamp < fiveMinutes) {
+        setCurrentUser(parsedUser.data);
+      } else {
+        localStorage.removeItem('currentUser');
+      }
+    }
+  
+    if (savedRepos) {
+      const parsedRepos = JSON.parse(savedRepos);
+      if (currentTime - parsedRepos.timestamp < fiveMinutes) {
+        setRepos(parsedRepos.data);
+      } else {
+        localStorage.removeItem('repos'); 
+      }
+    }
+  }, []);
+  
+
   const handleGetData = async () => {
     const token = process.env.REACT_APP_GITHUB_TOKEN;
 
@@ -40,7 +66,15 @@ const Home: React.FC = () => {
 
       if (newUser.name) {
         const { avatar_url, name, bio } = newUser;
-        setCurrentUser({ avatar_url, name, bio });
+        const userObject = { avatar_url, name, bio };
+        setCurrentUser(userObject);
+
+        // Salva o usuário no LocalStorage com um timestamp
+        const userWithTimestamp = {
+          data: userObject,
+          timestamp: new Date().getTime(),
+        };
+        localStorage.setItem('currentUser', JSON.stringify(userWithTimestamp));
 
         const reposData = await fetch(`https://api.github.com/users/${user}/repos`, {
           headers: {
@@ -71,11 +105,18 @@ const Home: React.FC = () => {
         );
 
         setRepos(reposWithDetails);
+
+        const reposWithTimestamp = {
+          data: reposWithDetails,
+          timestamp: new Date().getTime(),
+        };
+        localStorage.setItem('repos', JSON.stringify(reposWithTimestamp));
       }
     } catch (error) {
       console.error('Erro ao buscar os dados:', error);
     }
   };
+
 
   const totalPages = repos ? Math.ceil(repos.length / itemsPerPage) : 1;
 
@@ -113,7 +154,6 @@ const Home: React.FC = () => {
               <hr />
             </>
           )}
-
 
           {repos?.length && (
             <>

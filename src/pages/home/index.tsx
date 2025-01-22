@@ -23,6 +23,7 @@ const Home: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [repos, setRepos] = useState<Repo[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [favorites, setFavorites] = useState<Repo[]>([]); // Estado para os repositórios favoritos
   const itemsPerPage = 10;
 
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
     const savedRepos = localStorage.getItem('repos');
+    const savedFavorites = localStorage.getItem('favorites');
     const currentTime = new Date().getTime();
     const fiveMinutes = 3 * 60 * 1000; 
   
@@ -50,8 +52,12 @@ const Home: React.FC = () => {
         localStorage.removeItem('repos'); 
       }
     }
+
+    if (savedFavorites) {
+      const parsedFavorites = JSON.parse(savedFavorites);
+      setFavorites(parsedFavorites);
+    }
   }, []);
-  
 
   const handleGetData = async () => {
     const token = process.env.REACT_APP_GITHUB_TOKEN;
@@ -116,6 +122,11 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleFavorite = (repo: Repo) => {
+    const updatedFavorites = [...favorites, repo];
+    setFavorites(updatedFavorites);
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Armazenar no localStorage
+  };
 
   const totalPages = repos ? Math.ceil(repos.length / itemsPerPage) : 1;
 
@@ -159,11 +170,15 @@ const Home: React.FC = () => {
               <h1 className="repositorio">Repositórios</h1>
               <div className="conteudo">
                 {currentRepos.map((repo, index) => (
-                  <ItemList
-                    key={index}
-                    title={repo.name}
-                    onClick={() => navigate(`/repo/${repo.name}`, { state: { repo } })}
-                  />
+                  <div key={index} className="repo-item">
+                    <ItemList
+                      title={repo.name}
+                      onClick={() => navigate(`/repo/${repo.name}`, { state: { repo } })}
+                    />
+                    <button onClick={() => handleFavorite(repo)} className="favorite-button">
+                      Favoritar
+                    </button>
+                  </div>
                 ))}
               </div>
               <div className="pagination">

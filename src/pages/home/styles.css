@@ -1,3 +1,4 @@
+
 .conteudo {
     position: relative;
     display: flex;
@@ -102,11 +103,30 @@ button:hover {
     text-align: center;
 
 }
+.repo-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
 
   .conteudo{
     flex-direction: column;
     width: 100%;
     margin: 24px;
+  }
+  .favorite-button {
+    border-radius: 22px;
+    color: antiquewhite;
+    margin-right: 12px;
+    border: 1px solid #9999;
+    background: #EB6A40;
+    font-size: 18px;
+    padding: 10px;
+  }
+  
+  .favorite-button:hover {
+    background-color: #EB6A40;
   }
   .pagination {
     display: flex;

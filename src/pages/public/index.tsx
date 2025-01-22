@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'; // useCallback foi importado
+import React, { useState, useEffect, useCallback } from 'react'; 
 import { Header } from '../../components/Header/index.tsx';
 import { useNavigate } from 'react-router-dom';
 import ItemList from '../../components/ItemList/index.tsx';

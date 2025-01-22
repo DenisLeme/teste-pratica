@@ -10,9 +10,11 @@ interface User {
 }
 
 interface Repo {
-  languages(languages: any): unknown;
+  owner: string;
   name: string;
   description: string;
+  languages: Record<string, number>;
+  updated_at: string;
 }
 
 const Home: React.FC = () => {
@@ -21,35 +23,32 @@ const Home: React.FC = () => {
   const [repos, setRepos] = useState<Repo[] | null>(null);
 
   const handleGetData = async () => {
-    const token = process.env.REACT_APP_GITHUB_TOKEN; // Substitua pelo seu token
-  
+    const token = process.env.REACT_APP_GITHUB_TOKEN;
+
     try {
-      // Busca informações do usuário
+      // Fetch informações do usuário
       const userData = await fetch(`https://api.github.com/users/${user}`, {
         headers: {
           Authorization: `token ${token}`,
         },
       });
       const newUser = await userData.json();
-  
+
       if (newUser.name) {
         const { avatar_url, name, bio } = newUser;
         setCurrentUser({ avatar_url, name, bio });
-  
-        // Busca os repositórios do usuário
-        const reposData = await fetch(
-          `https://api.github.com/users/${user}/repos`,
-          {
-            headers: {
-              Authorization: `token ${token}`,
-            },
-          }
-        );
-        const newRepos: Repo[] = await reposData.json();
-  
+
+        // Fetch repositórios do usuário
+        const reposData = await fetch(`https://api.github.com/users/${user}/repos`, {
+          headers: {
+            Authorization: `token ${token}`,
+          },
+        });
+        const newRepos = await reposData.json();
+
         if (newRepos.length) {
-          // Busca as linguagens para cada repositório
-          const reposWithLanguages = await Promise.all(
+          // Fetch linguagens e adiciona dados do dono
+          const reposWithDetails = await Promise.all(
             newRepos.map(async (repo) => {
               const languagesData = await fetch(
                 `https://api.github.com/repos/${user}/${repo.name}/languages`,
@@ -60,22 +59,25 @@ const Home: React.FC = () => {
                 }
               );
               const languages = await languagesData.json();
-  
+
               return {
                 ...repo,
-                languages, // Adiciona as linguagens ao repositório
+                languages,
+                updatedAt: repo.updated_at, 
+                owner: repo.owner.login, 
               };
             })
           );
-  
-          setRepos(reposWithLanguages);
+
+          setRepos(reposWithDetails);
         }
       }
     } catch (error) {
       console.error('Erro ao buscar os dados:', error);
     }
   };
-  
+
+
 
 
   return (
@@ -118,9 +120,12 @@ const Home: React.FC = () => {
                   key={index}
                   title={repo.name}
                   description={repo.description}
-                  languages={Object.keys(repo.languages).join(', ')} // Converte as linguagens para string
+                  languages={Object.keys(repo.languages).join(', ')}
+                  updatedAt={new Date(repo.updated_at).toLocaleString()}
+                  owner={repo.owner} // Formata a data para exibição
                 />
               ))}
+
             </div>
           ) : null}
 

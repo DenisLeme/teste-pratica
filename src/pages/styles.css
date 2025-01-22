@@ -45,6 +45,9 @@ button {
     font-size: 18px;
     padding: 10px;
 }
+button :hover{
+    background: #EB6A40;
+}
 
 .perfil {
     display: flex;
@@ -124,4 +127,19 @@ button {
     flex-direction: column;
     width: 100%;
     margin: 24px;
+  }
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .pagination span {
+    font-size: 16px;
   }

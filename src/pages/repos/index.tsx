@@ -19,15 +19,14 @@ interface Repo {
 }
 
 const Repos: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null); // Dados do usuário
-  const [repos, setRepos] = useState<Repo[] | null>(null); // Repositórios
-  const [currentPage, setCurrentPage] = useState<number>(1); // Página atual
-  const itemsPerPage = 10; // Itens por página
+  const [currentUser, setCurrentUser] = useState<User | null>(null); 
+  const [repos, setRepos] = useState<Repo[] | null>(null); 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 10; 
 
   const navigate = useNavigate();
 
-  // Função que busca os dados do usuário e repositórios
-  const handleGetData = async () => {
+    const handleGetData = async () => {
     const token = process.env.REACT_APP_GITHUB_TOKEN;
 
     try {
@@ -77,15 +76,14 @@ const Repos: React.FC = () => {
     }
   };
 
-  // Calcula o total de páginas com base na quantidade de repositórios
-  const totalPages = repos ? Math.ceil(repos.length / itemsPerPage) : 1;
+    const totalPages = repos ? Math.ceil(repos.length / itemsPerPage) : 1;
 
-  // Pega os repositórios para a página atual
+  
   const currentRepos = repos
     ? repos.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
     : [];
 
-  // Carrega os dados assim que o componente é montado
+  
   useEffect(() => {
     handleGetData();
   }, []);
@@ -95,7 +93,7 @@ const Repos: React.FC = () => {
       <Header />
       <div>
         <div className="info">
-          {/* Exibindo informações do usuário */}
+          
           {currentUser?.name && (
             <>
               <div className="perfil">
@@ -113,7 +111,7 @@ const Repos: React.FC = () => {
             </>
           )}
 
-          {/* Exibindo os repositórios */}
+          
           {repos?.length && (
             <>
               <h1 className="repositorio">Repositórios</h1>
@@ -126,7 +124,7 @@ const Repos: React.FC = () => {
                   />
                 ))}
               </div>
-              {/* Paginação */}
+          
               <div className="pagination">
                 {[...Array(totalPages)].map((_, index) => (
                   <button

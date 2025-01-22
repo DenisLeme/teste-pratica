@@ -12,6 +12,9 @@ const Header = () => {
             <Link to="/">Procure por alguém no GitHub</Link>
           </li>
           <li>
+            <Link to="/public">Publicos</Link>
+          </li>
+          <li>
             <Link to="/repos">Meus Repositórios</Link>
           </li>
           <li>

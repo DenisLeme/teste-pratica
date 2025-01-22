@@ -21,12 +21,12 @@ const Home: React.FC = () => {
   const [user, setUser] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [repos, setRepos] = useState<Repo[] | null>(null);
+  const [selectedRepo, setSelectedRepo] = useState<Repo | null>(null);
 
   const handleGetData = async () => {
     const token = process.env.REACT_APP_GITHUB_TOKEN;
 
     try {
-      // Fetch informações do usuário
       const userData = await fetch(`https://api.github.com/users/${user}`, {
         headers: {
           Authorization: `token ${token}`,
@@ -38,7 +38,6 @@ const Home: React.FC = () => {
         const { avatar_url, name, bio } = newUser;
         setCurrentUser({ avatar_url, name, bio });
 
-        // Fetch repositórios do usuário
         const reposData = await fetch(`https://api.github.com/users/${user}/repos`, {
           headers: {
             Authorization: `token ${token}`,
@@ -47,7 +46,6 @@ const Home: React.FC = () => {
         const newRepos = await reposData.json();
 
         if (newRepos.length) {
-          // Fetch linguagens e adiciona dados do dono
           const reposWithDetails = await Promise.all(
             newRepos.map(async (repo) => {
               const languagesData = await fetch(
@@ -63,8 +61,8 @@ const Home: React.FC = () => {
               return {
                 ...repo,
                 languages,
-                updatedAt: repo.updated_at, 
-                owner: repo.owner.login, 
+                updatedAt: repo.updated_at,
+                owner: repo.owner.login,
               };
             })
           );
@@ -76,9 +74,6 @@ const Home: React.FC = () => {
       console.error('Erro ao buscar os dados:', error);
     }
   };
-
-
-
 
   return (
     <div className="Home">
@@ -94,7 +89,7 @@ const Home: React.FC = () => {
             />
             <button onClick={handleGetData}>Procurar</button>
           </div>
-          {currentUser?.name ? (
+          {currentUser?.name && (
             <>
               <div className="perfil">
                 <img
@@ -104,35 +99,41 @@ const Home: React.FC = () => {
                 />
                 <div>
                   <h3>{currentUser.name}</h3>
-                  <span>@{user}</span>
                   <p>{currentUser.bio}</p>
                 </div>
               </div>
               <hr />
             </>
-          ) : null}
+          )}
 
-          {repos?.length ? (
-            <div>
-              <h1 className="repositorio">Repositórios</h1>
+          {repos?.length && (
+            <><h1 className="repositorio">Repositórios</h1>
+            <div className='conteudo'>
               {repos.map((repo, index) => (
                 <ItemList
                   key={index}
                   title={repo.name}
-                  description={repo.description}
-                  languages={Object.keys(repo.languages).join(', ')}
-                  updatedAt={new Date(repo.updated_at).toLocaleString()}
-                  owner={repo.owner} // Formata a data para exibição
-                />
+                  onClick={() => setSelectedRepo(repo)} />
               ))}
 
-            </div>
-          ) : null}
-
+              {selectedRepo && (
+                <div className="repo-details">
+                  <h2>{selectedRepo.name}</h2>
+                  <p><strong>Descrição:</strong> {selectedRepo.description}</p>
+                  <p><strong>Linguagens:</strong> {Object.keys(selectedRepo.languages).join(', ')}</p>
+                  <p><strong>Ultima atualização:</strong> {new Date(selectedRepo.updated_at).toLocaleString()}</p>
+                  <p><strong>Dono do repositorio:</strong> {selectedRepo.owner}</p>
+                  <button onClick={() => setSelectedRepo(null)}>Fechar</button>
+                </div>
+              )}
+            </div></>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
+
 
 export default Home;

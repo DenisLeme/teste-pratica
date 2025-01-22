@@ -18,46 +18,20 @@ interface Repo {
   updated_at: string;
 }
 
-const Home: React.FC = () => {
-  const [user, setUser] = useState<string>('');
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [repos, setRepos] = useState<Repo[] | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 10;
+const Repos: React.FC = () => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null); // Dados do usuário
+  const [repos, setRepos] = useState<Repo[] | null>(null); // Repositórios
+  const [currentPage, setCurrentPage] = useState<number>(1); // Página atual
+  const itemsPerPage = 10; // Itens por página
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem('currentUser');
-    const savedRepos = localStorage.getItem('repos');
-    const currentTime = new Date().getTime();
-    const fiveMinutes = 3 * 60 * 1000; 
-  
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      if (currentTime - parsedUser.timestamp < fiveMinutes) {
-        setCurrentUser(parsedUser.data);
-      } else {
-        localStorage.removeItem('currentUser');
-      }
-    }
-  
-    if (savedRepos) {
-      const parsedRepos = JSON.parse(savedRepos);
-      if (currentTime - parsedRepos.timestamp < fiveMinutes) {
-        setRepos(parsedRepos.data);
-      } else {
-        localStorage.removeItem('repos'); 
-      }
-    }
-  }, []);
-  
-
+  // Função que busca os dados do usuário e repositórios
   const handleGetData = async () => {
     const token = process.env.REACT_APP_GITHUB_TOKEN;
 
     try {
-      const userData = await fetch(`https://api.github.com/users/${user}`, {
+      const userData = await fetch(`https://api.github.com/users/DenisLeme`, {
         headers: {
           Authorization: `token ${token}`,
         },
@@ -66,16 +40,9 @@ const Home: React.FC = () => {
 
       if (newUser.name) {
         const { avatar_url, name, bio } = newUser;
-        const userObject = { avatar_url, name, bio };
-        setCurrentUser(userObject);
+        setCurrentUser({ avatar_url, name, bio });
 
-        const userWithTimestamp = {
-          data: userObject,
-          timestamp: new Date().getTime(),
-        };
-        localStorage.setItem('currentUser', JSON.stringify(userWithTimestamp));
-
-        const reposData = await fetch(`https://api.github.com/users/${user}/repos`, {
+        const reposData = await fetch(`https://api.github.com/users/DenisLeme/repos`, {
           headers: {
             Authorization: `token ${token}`,
           },
@@ -85,7 +52,7 @@ const Home: React.FC = () => {
         const reposWithDetails = await Promise.all(
           newRepos.map(async (repo) => {
             const languagesData = await fetch(
-              `https://api.github.com/repos/${user}/${repo.name}/languages`,
+              `https://api.github.com/repos/DenisLeme/${repo.name}/languages`,
               {
                 headers: {
                   Authorization: `token ${token}`,
@@ -104,39 +71,31 @@ const Home: React.FC = () => {
         );
 
         setRepos(reposWithDetails);
-
-        const reposWithTimestamp = {
-          data: reposWithDetails,
-          timestamp: new Date().getTime(),
-        };
-        localStorage.setItem('repos', JSON.stringify(reposWithTimestamp));
       }
     } catch (error) {
       console.error('Erro ao buscar os dados:', error);
     }
   };
 
-
+  // Calcula o total de páginas com base na quantidade de repositórios
   const totalPages = repos ? Math.ceil(repos.length / itemsPerPage) : 1;
 
+  // Pega os repositórios para a página atual
   const currentRepos = repos
     ? repos.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
     : [];
+
+  // Carrega os dados assim que o componente é montado
+  useEffect(() => {
+    handleGetData();
+  }, []);
 
   return (
     <div className="Home">
       <Header />
       <div>
         <div className="info">
-          <div className="search">
-            <input
-              name="usuario"
-              value={user}
-              onChange={(event) => setUser(event.target.value)}
-              placeholder="@username"
-            />
-            <button onClick={handleGetData}>Procurar</button>
-          </div>
+          {/* Exibindo informações do usuário */}
           {currentUser?.name && (
             <>
               <div className="perfil">
@@ -154,6 +113,7 @@ const Home: React.FC = () => {
             </>
           )}
 
+          {/* Exibindo os repositórios */}
           {repos?.length && (
             <>
               <h1 className="repositorio">Repositórios</h1>
@@ -166,6 +126,7 @@ const Home: React.FC = () => {
                   />
                 ))}
               </div>
+              {/* Paginação */}
               <div className="pagination">
                 {[...Array(totalPages)].map((_, index) => (
                   <button
@@ -185,4 +146,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Repos;

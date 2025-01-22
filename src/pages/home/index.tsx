@@ -23,7 +23,7 @@ const Home: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [repos, setRepos] = useState<Repo[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [favorites, setFavorites] = useState<Repo[]>([]); // Estado para os repositórios favoritos
+  const [favorites, setFavorites] = useState<Repo[]>([]); 
   const itemsPerPage = 10;
 
   const navigate = useNavigate();
@@ -125,7 +125,7 @@ const Home: React.FC = () => {
   const handleFavorite = (repo: Repo) => {
     const updatedFavorites = [...favorites, repo];
     setFavorites(updatedFavorites);
-    localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Armazenar no localStorage
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); 
   };
 
   const totalPages = repos ? Math.ceil(repos.length / itemsPerPage) : 1;

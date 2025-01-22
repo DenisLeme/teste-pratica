@@ -14,7 +14,7 @@ interface Repo {
 
 const Favoritos: React.FC = () => {
   const [favorites, setFavorites] = useState<Repo[]>([]);
-  const navigate = useNavigate(); // Hook de navegação
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favorites');

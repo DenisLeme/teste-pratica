@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from '../../components/Header/index.tsx';
 import ItemList from '../../components/ItemList/index.tsx';
 import './styles.css';
@@ -13,6 +14,7 @@ interface Repo {
 
 const Favoritos: React.FC = () => {
   const [favorites, setFavorites] = useState<Repo[]>([]);
+  const navigate = useNavigate(); // Hook de navegação
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favorites');
@@ -29,11 +31,12 @@ const Favoritos: React.FC = () => {
         <div className="conteudo">
           {favorites.length > 0 ? (
             favorites.map((repo, index) => (
-              <ItemList
-                key={index}
-                title={repo.name}
-                onClick={() => console.log('Navegar para o repositório', repo)}
-              />
+              <div key={index} className="repo-item">
+                <ItemList
+                  title={repo.name}
+                  onClick={() => navigate(`/repo/${repo.name}`, { state: { repo } })}
+                />
+              </div>
             ))
           ) : (
             <p>Você ainda não favoritou nenhum repositório.</p>
